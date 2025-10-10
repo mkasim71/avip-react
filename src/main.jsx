@@ -6,11 +6,30 @@ import RegisterPage from "./pages/register";
 import ProductsPage from "./pages/products";
 import ErrorPage from "./pages/404";
 import "./index.css";
+import Counter from "./components/Fragments/learn/Counter";
+import UserList from "./components/Fragments/learn/UserList";
+import Clock from "./components/Fragments/learn/Clock";
+import Hello from "./components/Fragments/learn/Hello";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Hello World</div>,
+    element: <Counter />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/user",
+    element: <UserList />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/clock",
+    element: <Clock />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/hello",
+    element: <Hello />,
     errorElement: <ErrorPage />,
   },
   {

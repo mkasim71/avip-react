@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import CardProduct from "../components/Fragments/CardProduct";
 import Button from "../components/Elements/Button";
 
@@ -9,7 +9,7 @@ const products = [
     price: 1000000,
     image: "/images/shoes-1.jpg",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis   perspiciatis dolorum sunt placeat sapiente porro consequuntur? Quo,     accusantium dolorem. Pariatur, neque non.",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis perspiciatis dolorum sunt placeat sapiente porro consequuntur? Quo, accusantium dolorem. Pariatur, neque non.",
   },
   {
     id: 2,
@@ -17,27 +17,40 @@ const products = [
     price: 1800000,
     image: "/images/shoes-2.jpg",
     description:
-      "Dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis   perspiciatis dolorum sunt placeat sapiente porro consequuntur? Quo,     accusantium dolorem.",
+      "Dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis perspiciatis dolorum sunt placeat sapiente porro consequuntur? Quo,   accusantium dolorem.",
   },
   {
-    id: 4,
+    id: 3,
     name: "Sepatu Anjay",
     price: 800000,
     image: "/images/shoes-2.jpg",
     description:
-      "Dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis   perspiciatis dolorum sunt placeat sapiente porro consequuntur? Quo,     accusantium dolorem.",
+      "Dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis Quo, accusantium dolorem.",
   },
 ];
 
 const email = localStorage.getItem("email");
 
 const ProductsPage = () => {
-  const [cart, setCart] = useState([
-    {
-      id: 1,
-      qty: 1,
-    },
-  ]);
+  const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    // setCart([{ id: 1, qty: 1 }]);
+    setCart(JSON.parse(localStorage.getItem("cart")) || []);
+  }, []);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      const sum = cart.reduce((acc, item) => {
+        const product = products.find((product) => product.id === item.id);
+        return acc + product.price * item.qty;
+      }, 0);
+      setTotalPrice(sum);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      // console.log(JSON.stringify(cart));
+    }
+  }, [cart]);
 
   const handleLogout = () => {
     return (
@@ -87,10 +100,12 @@ const ProductsPage = () => {
           <h1 className="mb-2 ml-5 text-3xl font-bold text-blue-600">Cart</h1>
           <table className="text-left border-separate table-auto border-spacing-x-5">
             <thead>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+              </tr>
             </thead>
             <tbody>
               {cart.map((item) => {
@@ -116,6 +131,19 @@ const ProductsPage = () => {
                   </tr>
                 );
               })}
+              <tr>
+                <td colSpan={3}>
+                  <b>Total Price</b>
+                </td>
+                <td>
+                  <b>
+                    {totalPrice.toLocaleString("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    })}
+                  </b>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
