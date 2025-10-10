@@ -1,39 +1,14 @@
 import { Fragment, useState, useEffect, useRef } from "react";
 import CardProduct from "../components/Fragments/CardProduct";
 import Button from "../components/Elements/Button";
-
-const products = [
-  {
-    id: 1,
-    name: "Sepatu Baru",
-    price: 1000000,
-    image: "/images/shoes-1.jpg",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis perspiciatis dolorum sunt placeat sapiente porro consequuntur? Quo, accusantium dolorem. Pariatur, neque non.",
-  },
-  {
-    id: 2,
-    name: "Sepatu Adidas",
-    price: 1800000,
-    image: "/images/shoes-2.jpg",
-    description:
-      "Dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis perspiciatis dolorum sunt placeat sapiente porro consequuntur? Quo,   accusantium dolorem.",
-  },
-  {
-    id: 3,
-    name: "Sepatu Anjay",
-    price: 800000,
-    image: "/images/shoes-2.jpg",
-    description:
-      "Dolor sit amet consectetur adipisicing elit. Nisi sint rerum accusantium facere, deleniti vel assumenda blanditiis Quo, accusantium dolorem.",
-  },
-];
+import { getProducts } from "../services/product.service";
 
 const email = localStorage.getItem("email");
 
 const ProductsPage = () => {
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     // setCart([{ id: 1, qty: 1 }]);
@@ -41,7 +16,13 @@ const ProductsPage = () => {
   }, []);
 
   useEffect(() => {
-    if (cart.length > 0) {
+    getProducts((data) => {
+      setProducts(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (products.length > 0 && cart.length > 0) {
       const sum = cart.reduce((acc, item) => {
         const product = products.find((product) => product.id === item.id);
         return acc + product.price * item.qty;
@@ -50,7 +31,7 @@ const ProductsPage = () => {
       localStorage.setItem("cart", JSON.stringify(cart));
       // console.log(JSON.stringify(cart));
     }
-  }, [cart]);
+  }, [cart, products]);
 
   const handleLogout = () => {
     return (
@@ -101,19 +82,20 @@ const ProductsPage = () => {
       </div>
       <div className="flex justify-center py-5">
         <div className="flex flex-wrap w-4/6">
-          {products.map((product) => (
-            <CardProduct key={product.id}>
-              <CardProduct.Header image={product.image} />
-              <CardProduct.Body title={product.title}>
-                {product.description}
-              </CardProduct.Body>
-              <CardProduct.Footer
-                price={product.price}
-                id={product.id}
-                handleAddToCart={handleAddToCart}
-              />
-            </CardProduct>
-          ))}
+          {products.length > 0 &&
+            products.map((product) => (
+              <CardProduct key={product.id}>
+                <CardProduct.Header image={product.image} />
+                <CardProduct.Body title={product.title}>
+                  {product.description}
+                </CardProduct.Body>
+                <CardProduct.Footer
+                  price={product.price}
+                  id={product.id}
+                  handleAddToCart={handleAddToCart}
+                />
+              </CardProduct>
+            ))}
         </div>
         <div className="w-2/6">
           <h1 className="mb-2 ml-5 text-3xl font-bold text-blue-600">Cart</h1>
@@ -127,29 +109,30 @@ const ProductsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {cart.map((item) => {
-                const product = products.find(
-                  (product) => product.id === item.id
-                );
-                return (
-                  <tr key={item.id}>
-                    <td>{product.name}</td>
-                    <td>
-                      {product.price.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      })}
-                    </td>
-                    <td>{item.qty}</td>
-                    <td>
-                      {(item.qty * product.price).toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      })}
-                    </td>
-                  </tr>
-                );
-              })}
+              {products.length > 0 &&
+                cart.map((item) => {
+                  const product = products.find(
+                    (product) => product.id === item.id
+                  );
+                  return (
+                    <tr key={item.id}>
+                      <td>{product.title.substring(0, 10)}...</td>
+                      <td>
+                        {product.price.toLocaleString("id-ID", {
+                          style: "currency",
+                          currency: "USD",
+                        })}
+                      </td>
+                      <td>{item.qty}</td>
+                      <td>
+                        {(item.qty * product.price).toLocaleString("id-ID", {
+                          style: "currency",
+                          currency: "USD",
+                        })}
+                      </td>
+                    </tr>
+                  );
+                })}
               <tr ref={totalPriceRef}>
                 <td colSpan={3}>
                   <b>Total Price</b>
@@ -158,7 +141,7 @@ const ProductsPage = () => {
                   <b>
                     {totalPrice.toLocaleString("id-ID", {
                       style: "currency",
-                      currency: "IDR",
+                      currency: "USD",
                     })}
                   </b>
                 </td>
