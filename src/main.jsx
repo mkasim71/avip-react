@@ -11,10 +11,18 @@ import UserList from "./components/Fragments/learn/UserList";
 import Clock from "./components/Fragments/learn/Clock";
 import Hello from "./components/Fragments/learn/Hello";
 import DetailProductPage from "./pages/detailProduct";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import ProfilePage from "./pages/profile";
 
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <div>Hello World</div>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/counter",
     element: <Counter />,
     errorElement: <ErrorPage />,
   },
@@ -46,6 +54,10 @@ const router = createBrowserRouter([
     element: <ProductsPage />,
   },
   {
+    path: "/profile",
+    element: <ProfilePage />,
+  },
+  {
     path: "/product/:id",
     element: <DetailProductPage />,
   },
@@ -53,6 +65,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>
 );
