@@ -61,6 +61,7 @@ const ProductsPage = () => {
   // useRef
   const cartRef = useRef(JSON.parse(localStorage.getItem("cart")) || []);
 
+  // eslint-disable-next-line no-unused-vars
   const handleAddToCartRef = (id) => {
     cartRef.current = [...cartRef.current, { id, qty: 1 }];
     localStorage.setItem("cart", JSON.stringify(cartRef.current));
@@ -90,7 +91,7 @@ const ProductsPage = () => {
           {products.length > 0 &&
             products.map((product) => (
               <CardProduct key={product.id}>
-                <CardProduct.Header image={product.image} />
+                <CardProduct.Header image={product.image} id={product.id} />
                 <CardProduct.Body title={product.title}>
                   {product.description}
                 </CardProduct.Body>

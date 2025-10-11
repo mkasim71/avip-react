@@ -10,6 +10,7 @@ import Counter from "./components/Fragments/learn/Counter";
 import UserList from "./components/Fragments/learn/UserList";
 import Clock from "./components/Fragments/learn/Clock";
 import Hello from "./components/Fragments/learn/Hello";
+import DetailProductPage from "./pages/detailProduct";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: "/products",
     element: <ProductsPage />,
+  },
+  {
+    path: "/product/:id",
+    element: <DetailProductPage />,
   },
 ]);
 
